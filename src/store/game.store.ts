@@ -2,6 +2,42 @@ import { defineStore } from 'pinia';
 import { challenges } from '../data/challenges';
 import type { Currency, FarmField, GameState } from '../types/game-state.types';
 import { upgrades } from '../data/upgrades';
+import { useToastStore } from './toast.store';
+
+const getFieldById = (state: GameState) => (farmId: number) =>
+    state.farm.fields[farmId];
+const getUpgradeLevel = (state: GameState) => (upgradeId: string) =>
+    state.upgradeLevels[upgradeId] ?? 0;
+const getUpgradeById = (state: GameState) => (id: string) => {
+    return state.availableUpgrades[id];
+};
+const getCurrentCostForUpgrade = (state: GameState) => (id: string) => {
+    const upgrade = getUpgradeById(state)(id);
+
+    if (upgrade == undefined) {
+        return undefined;
+    }
+
+    const currentLevel = getUpgradeLevel(state)(id);
+    return upgrade.cost[currentLevel];
+};
+
+const canPurchaseUpgrade = (state: GameState) => (id: string) => {
+    const upgrade = getUpgradeById(state)(id);
+
+    if (upgrade == undefined) {
+        return false;
+    }
+
+    const currentCost = getCurrentCostForUpgrade(state)(id);
+    if (currentCost == undefined) {
+        return false;
+    }
+
+    return Object.entries(currentCost).every(([key, value]) => {
+        return state.currency[key as keyof Currency] >= value;
+    });
+};
 
 export const useGameStore = defineStore('game', {
     state: () => {
@@ -15,10 +51,7 @@ export const useGameStore = defineStore('game', {
                 } as Record<number, FarmField>,
                 cycle: 0,
             },
-            challenge: {
-                currentChallenge: challenges[1],
-                currentChallengeId: 1,
-            },
+            challenge: null,
             timeTicks: 0,
             availableUpgrades: Object.fromEntries(
                 upgrades.map((singleUpgrade) => [
@@ -30,22 +63,11 @@ export const useGameStore = defineStore('game', {
         } as GameState;
     },
     getters: {
-        getFieldById: (state) => (farmId: number) => state.farm.fields[farmId],
-        getUpgradeLevel: (state) => (upgradeId: string) =>
-            state.upgradeLevels[upgradeId] ?? 0,
-        getCurrentCost: (_state) => (id: string) => {
-            const upgrade = getters.getUpgradeById(id);
-
-            if (upgrade == undefined) {
-                return undefined;
-            }
-
-            const currentLevel = getters.getUpgradeLevel(id);
-            return upgrade.cost[currentLevel];
-        },
-        getUpgradeById: (state) => (id: string) => {
-            return state.availableUpgrades[id];
-        },
+        getFieldById,
+        getUpgradeLevel,
+        getUpgradeById,
+        getCurrentCostForUpgrade,
+        canPurchaseUpgrade,
     },
     actions: {
         plantField(farmId: number) {
@@ -120,6 +142,11 @@ export const useGameStore = defineStore('game', {
         },
         incrementUpgradeLevel(upgradeId: string) {
             this.upgradeLevels[upgradeId] = this.getUpgradeLevel(upgradeId) + 1;
+            const upgradeCost = this.getCurrentCostForUpgrade(upgradeId);
+            if (upgradeCost == undefined) {
+                delete this.availableUpgrades[upgradeId];
+                return;
+            }
         },
         purchaseUpgrade(id: string) {
             const upgrade = this.getUpgradeById(id);
@@ -127,12 +154,13 @@ export const useGameStore = defineStore('game', {
                 return;
             }
 
-            const currentCost = this.getCurrentCost(id);
+            const currentCost = this.getCurrentCostForUpgrade(id);
             if (currentCost == undefined) {
                 return;
             }
 
-            if (gameStore.pay(currentCost) === false) {
+            const toastStore = useToastStore();
+            if (this.pay(currentCost) === false) {
                 toastStore.addToast(
                     {
                         message: "You can't afford this upgrade",
@@ -143,7 +171,9 @@ export const useGameStore = defineStore('game', {
                 return;
             }
 
-            upgrade.effect();
+            this.incrementUpgradeLevel(id);
+
+            upgrade.effect(this);
         },
     },
 });

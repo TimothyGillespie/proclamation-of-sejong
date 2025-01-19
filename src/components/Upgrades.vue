@@ -1,25 +1,48 @@
 <script setup lang="ts">
 import { useGameStore } from '../store/game.store';
-import { useUpgradeStore } from '../store/upgrade.store';
 import CurrencyList from './CurrencyList.vue';
 
 const gameStore = useGameStore();
-const upgradeStore = useUpgradeStore();
 </script>
 
 <template>
     <div class="upgrades">
-        <div v-for="singleUpgrade in upgradeStore.availableUpgrades">
+        <div v-for="singleUpgrade in gameStore.availableUpgrades">
             <div
                 :key="singleUpgrade.id"
-                @click="upgradeStore.purchaseUpgrade(singleUpgrade.id)"
+                @click="gameStore.purchaseUpgrade(singleUpgrade.id)"
+                class="upgrade-button"
+                :class="{
+                    disabled: !gameStore.canPurchaseUpgrade(singleUpgrade.id),
+                }"
             >
                 <h1>{{ singleUpgrade.name }}</h1>
                 <p>{{ singleUpgrade.description }}</p>
-                <CurrencyList :currency="singleUpgrade.cost" />
+                <CurrencyList
+                    :currency="
+                        gameStore.getCurrentCostForUpgrade(singleUpgrade.id)!
+                    "
+                />
             </div>
         </div>
     </div>
 </template>
 
-<style scoped lang="sass"></style>
+<style scoped lang="scss">
+.upgrades {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .upgrade-button {
+        background-color: #0a192f;
+        margin: 0.7rem;
+        padding: 0.7rem;
+        border-radius: 0.2rem;
+
+        &.disabled {
+            opacity: 0.5;
+        }
+    }
+}
+</style>

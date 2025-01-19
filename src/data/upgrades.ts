@@ -24,7 +24,7 @@ export const upgrades: Upgrade[] = [
         id: '1',
         name: 'Purchase Field',
         description: 'Trade some rice for a new field',
-        cost: createPrices({ rice: 10 }, 1.4, 19),
+        cost: createPrices({ rice: 10 }, 1.4, 23),
         effect: (gameStore) => {
             gameStore.createField();
         },

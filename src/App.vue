@@ -17,8 +17,13 @@ const gameStore = useGameStore();
                 <div class="currency-list">
                     <CurrencyList :currency="gameStore.currency" />
                 </div>
-                <div>
-                    <FarmTile :field-id="1" />
+                <div class="farm-plot">
+                    <FarmTile
+                        v-for="singleFieldId in Object.keys(
+                            gameStore.farm.fields
+                        )"
+                        :field-id="parseInt(singleFieldId, 10)"
+                    />
                 </div>
             </div>
             <div class="middle-section">
@@ -84,5 +89,11 @@ const gameStore = useGameStore();
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.farm-plot {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.3rem;
 }
 </style>
