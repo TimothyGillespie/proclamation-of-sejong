@@ -35,6 +35,10 @@ const gameStore = useGameStore();
                         :task="gameStore.challenge.currentChallenge.task"
                     />
                 </div>
+                <div class="disclaimer">
+                    <div>Version 0.0.1</div>
+                    <div>More is yet to come</div>
+                </div>
             </div>
             <div class="right-section">
                 <Upgrades />
@@ -95,5 +99,17 @@ const gameStore = useGameStore();
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 0.3rem;
+}
+
+.disclaimer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+
+    div {
+        font-size: 3rem;
+    }
 }
 </style>

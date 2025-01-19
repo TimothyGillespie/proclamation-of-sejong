@@ -1,4 +1,3 @@
-import type { GameStoreType } from '../store/game.store';
 import type { Currency } from '../types/game-state.types';
 import type { Upgrade } from '../types/upgrades.types';
 
