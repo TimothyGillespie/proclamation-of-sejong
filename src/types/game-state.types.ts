@@ -26,4 +26,6 @@ export type GameState = {
     timeTicks: number;
     availableUpgrades: Record<string, Upgrade>;
     upgradeLevels: Record<string, number>;
+    currentGameEventId: number | null;
+    gameEventChoices: Record<string, number[]>;
 };

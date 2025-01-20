@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CurrencyList from './components/CurrencyList.vue';
 import FarmTile from './components/FarmTile.vue';
+import GameEventPopup from './components/GameEventPopup.vue';
 import LoadingBar from './components/LoadingBar.vue';
 import ToastDisplay from './components/ToastDisplay.vue';
 import TypingChallenge from './components/TypingChallenge.vue';
@@ -50,6 +51,7 @@ const gameStore = useGameStore();
         </div>
     </div>
     <ToastDisplay />
+    <GameEventPopup :event="gameStore.currentGameEvent" />
 </template>
 
 <style scoped>

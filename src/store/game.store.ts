@@ -3,6 +3,8 @@ import { challenges } from '../data/challenges';
 import type { Currency, FarmField, GameState } from '../types/game-state.types';
 import { upgrades } from '../data/upgrades';
 import { useToastStore } from './toast.store';
+import { gameEvents, gameEventsInput } from '../data/game-events';
+import type { GameEvent } from '../types/game-event.types';
 
 const getFieldById = (state: GameState) => (farmId: number) =>
     state.farm.fields[farmId];
@@ -39,6 +41,14 @@ const canPurchaseUpgrade = (state: GameState) => (id: string) => {
     });
 };
 
+const currentGameEvent = (state: GameState): GameEvent | null => {
+    if (state.currentGameEventId == null) {
+        return null;
+    }
+
+    return gameEvents[state.currentGameEventId] ?? null;
+};
+
 export const useGameStore = defineStore('game', {
     state: () => {
         return {
@@ -60,6 +70,8 @@ export const useGameStore = defineStore('game', {
                 ])
             ),
             upgradeLevels: {},
+            currentGameEventId: null,
+            gameEventChoices: {},
         } as GameState;
     },
     getters: {
@@ -68,6 +80,7 @@ export const useGameStore = defineStore('game', {
         getUpgradeById,
         getCurrentCostForUpgrade,
         canPurchaseUpgrade,
+        currentGameEvent,
     },
     actions: {
         plantField(farmId: number) {
@@ -87,6 +100,19 @@ export const useGameStore = defineStore('game', {
             this.timeTicks += 1;
             if (this.timeTicks % 1000 === 0) {
                 this.increaseFarmCycle();
+            }
+
+            if (this.currentGameEventId == null) {
+                const triggeredGameEvents = gameEventsInput.filter(
+                    (gameEvent) => {
+                        return gameEvent.trigger(this, gameEvent);
+                    }
+                );
+
+                if (triggeredGameEvents.length > 0) {
+                    const event = triggeredGameEvents[0];
+                    this.mountGameEvent(event.id);
+                }
             }
         },
         increaseFarmCycle() {
@@ -174,6 +200,28 @@ export const useGameStore = defineStore('game', {
             this.incrementUpgradeLevel(id);
 
             upgrade.effect(this);
+        },
+        mountGameEvent(eventId: number) {
+            this.gameEventChoices[eventId] = [];
+            this.currentGameEventId = eventId;
+        },
+        makeGameEventChoice(choiceId: number) {
+            const gameEvent = this.currentGameEvent;
+            if (gameEvent == null) {
+                return;
+            }
+
+            const choice = gameEvent.options.find(
+                (option) => option.id === choiceId
+            );
+
+            if (choice == undefined) {
+                return;
+            }
+
+            choice.onPick(this);
+            this.gameEventChoices[gameEvent.id].push(choiceId);
+            this.currentGameEventId = null;
         },
     },
 });
