@@ -40,7 +40,7 @@ gameStore.startChallenge(1);
                     </div>
                 </div>
                 <div class="disclaimer">
-                    <div>Version 0.0.1</div>
+                    <div>Version 0.0.2</div>
                     <div>More is yet to come</div>
                 </div>
             </div>
