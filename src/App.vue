@@ -9,6 +9,7 @@ import Upgrades from './components/Upgrades.vue';
 import { useGameStore } from './store/game.store';
 
 const gameStore = useGameStore();
+gameStore.startChallenge(1);
 </script>
 
 <template>
@@ -28,13 +29,15 @@ const gameStore = useGameStore();
                 </div>
             </div>
             <div class="middle-section">
-                <div v-if="gameStore.challenge != null">
-                    <TypingChallenge
-                        :translation="
-                            gameStore.challenge.currentChallenge.translation
-                        "
-                        :task="gameStore.challenge.currentChallenge.task"
-                    />
+                <div>
+                    <div v-if="gameStore.challenge != null">
+                        <TypingChallenge
+                            :translation="
+                                gameStore.challenge.currentChallenge.translation
+                            "
+                            :task="gameStore.challenge.currentChallenge.task"
+                        />
+                    </div>
                 </div>
                 <div class="disclaimer">
                     <div>Version 0.0.1</div>
@@ -86,8 +89,10 @@ const gameStore = useGameStore();
 .middle-section {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    flex-direction: column;
+    margin: 0.8rem 0;
 }
 
 .right-section {
@@ -105,13 +110,12 @@ const gameStore = useGameStore();
 
 .disclaimer {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
 
     div {
-        font-size: 3rem;
+        font-size: 0.7rem;
     }
 }
 </style>
