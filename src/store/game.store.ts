@@ -64,10 +64,9 @@ export const useGameStore = defineStore('game', {
             challenge: null,
             timeTicks: 0,
             availableUpgrades: Object.fromEntries(
-                upgrades.map((singleUpgrade) => [
-                    singleUpgrade.id,
-                    singleUpgrade,
-                ])
+                upgrades
+                    .slice(0, 1)
+                    .map((singleUpgrade) => [singleUpgrade.id, singleUpgrade])
             ),
             upgradeLevels: {},
             currentGameEventId: null,
@@ -222,6 +221,14 @@ export const useGameStore = defineStore('game', {
             choice.onPick(this);
             this.gameEventChoices[gameEvent.id].push(choiceId);
             this.currentGameEventId = null;
+        },
+        unlockUpgrade(id: string) {
+            const upgrade = upgrades.find((upgrade) => upgrade.id === id);
+            if (upgrade == undefined) {
+                return;
+            }
+
+            this.availableUpgrades[id] = upgrade;
         },
     },
 });

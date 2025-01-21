@@ -28,4 +28,13 @@ export const upgrades: Upgrade[] = [
             gameStore.createField();
         },
     },
+    {
+        id: '2',
+        name: 'Payback the Scribe',
+        description: 'Pay the scribe in rice to start learning Hunminjeongeum',
+        cost: [{ rice: 15 }],
+        effect: (gameStore) => {
+            gameStore.startChallenge(1);
+        },
+    },
 ];

@@ -1,11 +1,10 @@
 import type { GameStoreType } from '../store/game.store';
-import type { GameState } from './game-state.types';
 
 export type GameEventOption = {
     type: 'choice';
     id: number;
     label: string;
-    onPick: (gameState: GameState) => void;
+    onPick: (gameStore: GameStoreType) => void;
 };
 
 export type GameEvent = {

@@ -25,7 +25,7 @@ Life is humble, but it's alright.
 
 == In 1447 ==
 
-One morning, you are called to the central square by the village chief. A government official reads out a lot a new royal proclamation:
+One morning, you are called to the central square by the village chief. A government official reads out aloud a new royal proclamation:
 
 "The Great King Sejong, in his infinite wisdom and compassion for the people, has created a new script — Hunminjeongeum — that is simple, logical, and meant for all. With this script, even a farmer can learn to read and write."
 
