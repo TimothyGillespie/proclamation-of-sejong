@@ -229,7 +229,35 @@ export const gameEventsInput: GameEvent[] = [
                 label: 'This is incredible',
                 onPick: (gameStore) => {
                     gameStore.currencyModifiers.rice.base += 1;
+                    gameStore.mountGameEvent(99999);
                 },
+            },
+        ],
+    },
+    {
+        id: 99999,
+        name: 'Work in Progress',
+        description: [
+            'This is currently the end of the game. I hope you enjoyed it.',
+            'If you have any feedback, ideas or bug reports, please get in touch with me via email (timothy@gillespie.eu) or on Discord (id: sometimothy).',
+            'if you want updates on this game do get in contact with me as well. I will notify you when I have something new to show.',
+            'Thank you for playing.',
+        ],
+        options: [
+            {
+                type: 'choice',
+                id: 1,
+                label: 'Restart',
+                onPick: (gameStore) => {
+                    gameStore.$reset();
+                    window.location.href = window.location.href; // See App.vue
+                },
+            },
+            {
+                type: 'choice',
+                id: 2,
+                label: 'Continue Anway',
+                onPick: () => {},
             },
         ],
     },
