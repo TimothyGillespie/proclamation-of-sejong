@@ -19,7 +19,9 @@ export const gameEventsInput: GameEvent[] = [
                 label: 'QWERTY (English Keyboard)',
                 onPick: (gameStore) => {
                     gameStore.setKeyboardLayout('qwerty');
-                    gameStore.mountGameEvent(1);
+                    setTimeout(() => {
+                        gameStore.mountGameEvent(1);
+                    });
                 },
             },
             {
@@ -28,7 +30,9 @@ export const gameEventsInput: GameEvent[] = [
                 label: 'QWERTZ (German Keyboard)',
                 onPick: (gameStore) => {
                     gameStore.setKeyboardLayout('qwertz');
-                    gameStore.mountGameEvent(1);
+                    setTimeout(() => {
+                        gameStore.mountGameEvent(1);
+                    });
                 },
             },
             {
@@ -37,7 +41,9 @@ export const gameEventsInput: GameEvent[] = [
                 label: 'AZERTY (French Keyboard)',
                 onPick: (gameStore) => {
                     gameStore.setKeyboardLayout('azerty');
-                    gameStore.mountGameEvent(1);
+                    setTimeout(() => {
+                        gameStore.mountGameEvent(1);
+                    });
                 },
             },
             {
@@ -46,7 +52,9 @@ export const gameEventsInput: GameEvent[] = [
                 label: 'Hangul (Korean Keyboard in Hangul mode)',
                 onPick: (gameStore) => {
                     gameStore.setKeyboardLayout('hangul');
-                    gameStore.mountGameEvent(1);
+                    setTimeout(() => {
+                        gameStore.mountGameEvent(1);
+                    });
                 },
             },
         ],
@@ -143,7 +151,7 @@ export const gameEventsInput: GameEvent[] = [
             {
                 type: 'choice',
                 id: 1,
-                label: 'Ask the Neighbors',
+                label: '...',
                 onPick: (gameStore) => {
                     gameStore.startChallenge(4);
                 },
@@ -229,7 +237,9 @@ export const gameEventsInput: GameEvent[] = [
                 label: 'This is incredible',
                 onPick: (gameStore) => {
                     gameStore.currencyModifiers.rice.base += 1;
-                    gameStore.mountGameEvent(99999);
+                    setTimeout(() => {
+                        gameStore.mountGameEvent(99999);
+                    });
                 },
             },
         ],
