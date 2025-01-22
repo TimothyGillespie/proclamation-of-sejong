@@ -62,6 +62,7 @@ const { event } = defineProps<{
 
 .choice-bar {
     display: flex;
+    gap: 1rem;
     justify-content: center;
     align-items: center;
 }
