@@ -45,7 +45,6 @@ export const upgrades: Upgrade[] = [
             'Send your petition for a new irigation canal to the local government. For some reason, the post office takes rice as payment, as well.',
         cost: [{ rice: 20 }],
         effect: (gameStore) => {
-            gameStore.mountGameEvent(8);
             gameStore.createTickStamp(TICKSTAMP_EVENTS.PETITION_SENT);
         },
     },
