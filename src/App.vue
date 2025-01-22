@@ -8,7 +8,7 @@ import TypingChallenge from './components/TypingChallenge.vue';
 import Upgrades from './components/Upgrades.vue';
 import { useGameStore } from './store/game.store';
 
-let gameStore = useGameStore();
+const gameStore = useGameStore();
 
 const resetGame = () => {
     // confirmation first via alert
@@ -45,7 +45,7 @@ const resetGame = () => {
                     </div>
                 </div>
                 <div class="disclaimer">
-                    <div>Version 0.0.2</div>
+                    <div>Version 0.0.3</div>
                     <div>More is yet to come</div>
                     <button class="btn danger" v-on:click="resetGame">
                         Reset Game
