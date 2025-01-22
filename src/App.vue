@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import CurrencyList from './components/CurrencyList.vue';
 import FarmTile from './components/FarmTile.vue';
 import GameEventPopup from './components/GameEventPopup.vue';
@@ -9,6 +10,14 @@ import Upgrades from './components/Upgrades.vue';
 import { useGameStore } from './store/game.store';
 
 const gameStore = useGameStore();
+let {
+    farm,
+    currentChallenge,
+    currentGameEvent,
+    timeTicks,
+    currency,
+    tickSpeed,
+} = storeToRefs(gameStore);
 
 const resetGame = () => {
     // confirmation first via alert
@@ -24,23 +33,21 @@ const resetGame = () => {
         <div class="main-screen">
             <div class="left-section">
                 <div class="currency-list">
-                    <CurrencyList :currency="gameStore.currency" />
+                    <CurrencyList :currency="currency" />
                 </div>
                 <div class="farm-plot">
                     <FarmTile
-                        v-for="singleFieldId in Object.keys(
-                            gameStore.farm.fields
-                        )"
+                        v-for="singleFieldId in Object.keys(farm.fields)"
                         :field-id="parseInt(singleFieldId, 10)"
                     />
                 </div>
             </div>
             <div class="middle-section">
                 <div>
-                    <div v-if="gameStore.currentChallenge != null">
+                    <div v-if="currentChallenge != null">
                         <TypingChallenge
-                            v-if="gameStore.currentChallenge != null"
-                            :challenge="gameStore.currentChallenge"
+                            v-if="currentChallenge != null"
+                            :challenge="currentChallenge"
                         />
                     </div>
                 </div>
@@ -52,8 +59,8 @@ const resetGame = () => {
                     </button>
                     <button
                         class="btn success"
-                        v-on:click="gameStore.tickSpeed = 100"
-                        v-if="gameStore.tickSpeed === 1"
+                        v-on:click="tickSpeed = 100"
+                        v-if="tickSpeed === 1"
                     >
                         Increase Game Speed
                     </button>
@@ -72,11 +79,11 @@ const resetGame = () => {
         </div>
 
         <div class="bottom-section">
-            <LoadingBar :progress="(gameStore.timeTicks % 1000) / 1000" />
+            <LoadingBar :progress="(timeTicks % 1000) / 1000" />
         </div>
     </div>
     <ToastDisplay />
-    <GameEventPopup :event="gameStore.currentGameEvent" />
+    <GameEventPopup :event="currentGameEvent" />
 </template>
 
 <style scoped>
