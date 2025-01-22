@@ -1,22 +1,5 @@
 import { letterMapping, specialKeyMap } from '../data/keyboard';
-import { doubleMap } from '../data/korean-symbols';
 import type { TypeEvent, TypeEventSubscriber } from '../types/event.types';
-
-const conversionMapFrom = (inputMap: Record<string, string>) => {
-    const shiftConversionMap: Record<string, string> = Object.entries(inputMap)
-        .filter((singleMapping) => singleMapping[1] in doubleMap)
-        .reduce(
-            (acc, [key, value]) => {
-                acc[key.toLocaleUpperCase()] = doubleMap[value];
-                return acc;
-            },
-            {} as Record<string, string>
-        );
-
-    const conversionMap = { ...inputMap, ...shiftConversionMap };
-
-    return conversionMap;
-};
 
 class KeyboardService {
     private subscribers: { id: string; callback: TypeEventSubscriber }[] = [];
@@ -24,11 +7,11 @@ class KeyboardService {
 
     constructor() {
         window.addEventListener('keydown', this.handleKeydown.bind(this));
-        this.conversionMap = conversionMapFrom(letterMapping.hangul);
+        this.conversionMap = letterMapping.hangul;
     }
 
     public changeConversionMap(layout: string) {
-        this.conversionMap = conversionMapFrom(letterMapping[layout]);
+        this.conversionMap = letterMapping[layout];
     }
 
     private handleKeydown(event: KeyboardEvent) {

@@ -1,4 +1,5 @@
 import type { SpecialKeyTypeEvent } from '../types/event.types';
+import { doubleMap } from '../data/korean-symbols';
 
 const letterMappingGermanHangul: Record<string, string> = {
     q: 'ㅂ',
@@ -114,12 +115,33 @@ const letterMappingHangulHangul: Record<string, string> = {
     ㅠ: 'ㅠ',
     ㅜ: 'ㅜ',
     ㅡ: 'ㅡ',
+    ㅃ: 'ㅃ',
+    ㅉ: 'ㅉ',
+    ㄸ: 'ㄸ',
+    ㄲ: 'ㄲ',
+    ㅆ: 'ㅆ',
+};
+
+const completeConversionMapFrom = (inputMap: Record<string, string>) => {
+    const shiftConversionMap: Record<string, string> = Object.entries(inputMap)
+        .filter((singleMapping) => singleMapping[1] in doubleMap)
+        .reduce(
+            (acc, [key, value]) => {
+                acc[key.toLocaleUpperCase()] = doubleMap[value];
+                return acc;
+            },
+            {} as Record<string, string>
+        );
+
+    const conversionMap = { ...inputMap, ...shiftConversionMap };
+
+    return conversionMap;
 };
 
 export const letterMapping: Record<string, Record<string, string>> = {
-    qwertz: letterMappingGermanHangul,
-    qwerty: letterMappingEnglishHangul,
-    azerty: letterMappingFrenchHangul,
+    qwertz: completeConversionMapFrom(letterMappingGermanHangul),
+    qwerty: completeConversionMapFrom(letterMappingEnglishHangul),
+    azerty: completeConversionMapFrom(letterMappingFrenchHangul),
     hangul: letterMappingHangulHangul,
 };
 
