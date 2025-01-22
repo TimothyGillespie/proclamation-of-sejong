@@ -6,32 +6,36 @@ import { useToastStore } from './toast.store';
 import { gameEvents, gameEventsInput } from '../data/game-events';
 import type { GameEvent } from '../types/game-event.types';
 
+export const TICKSTAMP_EVENTS = {
+    PETITION_SENT: 'petition-sent',
+};
+
 const getFieldById = (state: GameState) => (farmId: number) =>
     state.farm.fields[farmId];
-const getUpgradeLevel = (state: GameState) => (upgradeId: string) =>
+const getUpgradeLevel = (state: GameState) => (upgradeId: number) =>
     state.upgradeLevels[upgradeId] ?? 0;
-const getUpgradeById = (state: GameState) => (id: string) => {
-    return state.availableUpgrades[id];
+const getUpgradeById = (state: GameState) => (upgradeId: number) => {
+    return state.availableUpgrades[upgradeId];
 };
-const getCurrentCostForUpgrade = (state: GameState) => (id: string) => {
-    const upgrade = getUpgradeById(state)(id);
+const getCurrentCostForUpgrade = (state: GameState) => (upgradeId: number) => {
+    const upgrade = getUpgradeById(state)(upgradeId);
 
     if (upgrade == undefined) {
         return undefined;
     }
 
-    const currentLevel = getUpgradeLevel(state)(id);
+    const currentLevel = getUpgradeLevel(state)(upgradeId);
     return upgrade.cost[currentLevel];
 };
 
-const canPurchaseUpgrade = (state: GameState) => (id: string) => {
-    const upgrade = getUpgradeById(state)(id);
+const canPurchaseUpgrade = (state: GameState) => (upgradeId: number) => {
+    const upgrade = getUpgradeById(state)(upgradeId);
 
     if (upgrade == undefined) {
         return false;
     }
 
-    const currentCost = getCurrentCostForUpgrade(state)(id);
+    const currentCost = getCurrentCostForUpgrade(state)(upgradeId);
     if (currentCost == undefined) {
         return false;
     }
@@ -49,11 +53,21 @@ const currentGameEvent = (state: GameState): GameEvent | null => {
     return gameEvents[state.currentGameEventId] ?? null;
 };
 
+const currentChallenge = (state: GameState) =>
+    challenges[state.currentChallengeId ?? -1] ?? null;
+
+const ticksSinceTicketstamp = (state: GameState) => (id: string) => {
+    return state.timeTicks - state.tickStamps[id];
+};
+
 export const useGameStore = defineStore('game', {
     state: () => {
         return {
             currency: {
                 rice: 0,
+            },
+            currencyModifiers: {
+                rice: { base: 1, multiplier: 1 },
             },
             farm: {
                 fields: {
@@ -61,7 +75,8 @@ export const useGameStore = defineStore('game', {
                 } as Record<number, FarmField>,
                 cycle: 0,
             },
-            challenge: null,
+            currentChallengeId: null,
+            completeChallengeIds: [] as number[],
             timeTicks: 0,
             availableUpgrades: Object.fromEntries(
                 upgrades
@@ -71,6 +86,8 @@ export const useGameStore = defineStore('game', {
             upgradeLevels: {},
             currentGameEventId: null,
             gameEventChoices: {},
+            tickStamps: {},
+            tickSpeed: 1,
         } as GameState;
     },
     getters: {
@@ -80,6 +97,8 @@ export const useGameStore = defineStore('game', {
         getCurrentCostForUpgrade,
         canPurchaseUpgrade,
         currentGameEvent,
+        currentChallenge,
+        ticksSinceTicketstamp,
     },
     actions: {
         plantField(farmId: number) {
@@ -92,19 +111,24 @@ export const useGameStore = defineStore('game', {
             if (this.farm.fields[farmId].state !== 'ripe') {
                 return;
             }
-            this.currency.rice += 1;
+            this.currency.rice +=
+                this.currencyModifiers.rice.base *
+                this.currencyModifiers.rice.multiplier;
             this.farm.fields[farmId].state = 'barren';
         },
         tickTime() {
-            this.timeTicks += 1;
-            if (this.timeTicks % 1000 === 0) {
+            this.timeTicks += this.tickSpeed;
+            if (this.timeTicks > this.farm.cycle * 1000) {
                 this.increaseFarmCycle();
             }
 
             if (this.currentGameEventId == null) {
                 const triggeredGameEvents = gameEventsInput.filter(
                     (gameEvent) => {
-                        return gameEvent.trigger(this, gameEvent);
+                        return (
+                            gameEvent.trigger != undefined &&
+                            gameEvent.trigger(this, gameEvent)
+                        );
                     }
                 );
 
@@ -130,25 +154,28 @@ export const useGameStore = defineStore('game', {
             this.farm.fields[nextId] = { state: 'barren' };
         },
         startChallenge(id: number) {
-            const challenge = challenges[id];
-
-            if (this.challenge == null) {
-                this.challenge = {
-                    currentChallenge: challenge,
-                    currentChallengeId: id,
-                };
+            if (this.currentChallengeId === id || challenges[id] == undefined) {
                 return;
             }
 
-            this.challenge.currentChallenge = challenge;
-            this.challenge.currentChallengeId = id;
+            this.currentChallengeId = id;
         },
         completeChallenge() {
-            if (this.challenge == null) {
+            if (this.currentChallengeId == null) {
                 return;
             }
-            const nextId = this.challenge.currentChallengeId + 1;
-            this.startChallenge(nextId);
+
+            const currentChallengeId = this.currentChallengeId;
+            this.completeChallengeIds = [
+                ...this.completeChallengeIds,
+                currentChallengeId,
+            ];
+            this.currentChallenge.onCompletion(this);
+
+            // If the challenge chose a new challenge, keep it - otherwise the challenge
+            if (this.currentChallengeId === currentChallengeId) {
+                this.currentChallengeId = null;
+            }
         },
         pay(cost: Partial<Currency>): boolean {
             const canAfford = Object.entries(cost).every(([key, value]) => {
@@ -165,7 +192,7 @@ export const useGameStore = defineStore('game', {
 
             return true;
         },
-        incrementUpgradeLevel(upgradeId: string) {
+        incrementUpgradeLevel(upgradeId: number) {
             this.upgradeLevels[upgradeId] = this.getUpgradeLevel(upgradeId) + 1;
             const upgradeCost = this.getCurrentCostForUpgrade(upgradeId);
             if (upgradeCost == undefined) {
@@ -173,13 +200,13 @@ export const useGameStore = defineStore('game', {
                 return;
             }
         },
-        purchaseUpgrade(id: string) {
-            const upgrade = this.getUpgradeById(id);
+        purchaseUpgrade(upgradeId: number) {
+            const upgrade = this.getUpgradeById(upgradeId);
             if (upgrade == undefined) {
                 return;
             }
 
-            const currentCost = this.getCurrentCostForUpgrade(id);
+            const currentCost = this.getCurrentCostForUpgrade(upgradeId);
             if (currentCost == undefined) {
                 return;
             }
@@ -196,7 +223,7 @@ export const useGameStore = defineStore('game', {
                 return;
             }
 
-            this.incrementUpgradeLevel(id);
+            this.incrementUpgradeLevel(upgradeId);
 
             upgrade.effect(this);
         },
@@ -222,13 +249,16 @@ export const useGameStore = defineStore('game', {
             this.gameEventChoices[gameEvent.id].push(choiceId);
             this.currentGameEventId = null;
         },
-        unlockUpgrade(id: string) {
+        unlockUpgrade(id: number) {
             const upgrade = upgrades.find((upgrade) => upgrade.id === id);
             if (upgrade == undefined) {
                 return;
             }
 
             this.availableUpgrades[id] = upgrade;
+        },
+        createTickStamp(id: string) {
+            this.tickStamps[id] = this.timeTicks;
         },
     },
     persist: true,

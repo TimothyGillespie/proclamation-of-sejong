@@ -1,3 +1,4 @@
+import type { GameStoreType } from '../store/game.store';
 import type { Upgrade } from './upgrades.types';
 
 export type Currency = {
@@ -9,23 +10,29 @@ export type FarmField = {
 };
 
 export type Challenge = {
-    task: string;
-    translation: string | null;
+    task: { text: string; translation?: string }[];
+    onCompletion: (gameStore: GameStoreType) => void;
+};
+
+export type CurrencyModifier = {
+    base: number;
+    multiplier: number;
 };
 
 export type GameState = {
     currency: Currency;
+    currencyModifiers: Record<keyof Currency, CurrencyModifier>;
     farm: {
         fields: Record<number, FarmField>;
         cycle: number;
     };
-    challenge: {
-        currentChallenge: Challenge;
-        currentChallengeId: number;
-    } | null;
+    currentChallengeId: number | null;
+    completeChallengeIds: number[];
     timeTicks: number;
-    availableUpgrades: Record<string, Upgrade>;
-    upgradeLevels: Record<string, number>;
+    availableUpgrades: Record<number, Upgrade>;
+    upgradeLevels: Record<number, number>;
     currentGameEventId: number | null;
     gameEventChoices: Record<string, number[]>;
+    tickStamps: Record<string, number>;
+    tickSpeed: number;
 };

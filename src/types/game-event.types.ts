@@ -11,7 +11,7 @@ export type GameEvent = {
     id: number;
     name: string;
     description: string[];
-    trigger: (
+    trigger?: (
         gameStore: GameStoreType,
         gameEvent: Omit<GameEvent, 'trigger'>
     ) => boolean;

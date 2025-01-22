@@ -12,11 +12,18 @@ const evalutedBlocks = ref<EvaluatedHangulBlock[]>([]);
 const cursorLocation = ref(-1);
 const gameStore = useGameStore();
 
-const props = defineProps<Challenge>();
+const { challenge } = defineProps<{ challenge: Challenge }>();
+const currentTaskPartIndex = ref(0);
+const currentTaskPart = ref<Challenge['task'][number]>(
+    challenge?.task[currentTaskPartIndex.value] ?? null
+);
 
 keyboardService.subscribe((typeEvent: TypeEvent) => {
+    if (!currentTaskPart.value) return;
     inputStore.input(typeEvent);
-    evalutedBlocks.value = inputStore.getEvaluatedBlocks(props.task);
+    evalutedBlocks.value = inputStore.getEvaluatedBlocks(
+        currentTaskPart.value.text
+    );
 
     const lastBlock = evalutedBlocks.value[evalutedBlocks.value.length - 1];
     if (lastBlock && lastBlock.completed) {
@@ -26,15 +33,25 @@ keyboardService.subscribe((typeEvent: TypeEvent) => {
     }
 
     if (
-        evalutedBlocks.value.length === props.task.length &&
+        evalutedBlocks.value.length === currentTaskPart.value.text.length &&
         evalutedBlocks.value.every((block) => block.state === 'correct')
     ) {
-        gameStore.completeChallenge();
+        if (currentTaskPartIndex.value < challenge.task.length - 1) {
+            currentTaskPartIndex.value++;
+            currentTaskPart.value = challenge.task[currentTaskPartIndex.value];
+        } else {
+            gameStore.completeChallenge();
+            currentTaskPartIndex.value = 0;
+        }
+
+        inputStore.reset();
+        evalutedBlocks.value = [];
+        cursorLocation.value = -1;
     }
 });
 
 watch(
-    () => props.task,
+    () => challenge.task,
     () => {
         inputStore.reset();
         evalutedBlocks.value = [];
@@ -43,11 +60,11 @@ watch(
 </script>
 
 <template>
-    <div class="text-container">
-        <div class="translation" v-if="props.translation">
-            {{ props.translation }}
+    <div class="text-container" v-if="currentTaskPart">
+        <div class="translation" v-if="currentTaskPart.translation">
+            {{ currentTaskPart.translation }}
         </div>
-        <div class="task correct">{{ props.task }}</div>
+        <div class="task correct">{{ currentTaskPart.text }}</div>
         <div class="user-input">
             <span
                 v-for="(block, index) in evalutedBlocks"

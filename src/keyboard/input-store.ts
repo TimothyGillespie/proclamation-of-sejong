@@ -100,6 +100,14 @@ export class InputStore {
             }
 
             const lastBlock = this.hangulBlocks[this.hangulBlocks.length - 1];
+
+            if (
+                lastBlock.characters.length === 1 &&
+                lastBlock.characters[0] === ' '
+            ) {
+                return;
+            }
+
             lastBlock.completed = true;
 
             this.hangulBlocks = [

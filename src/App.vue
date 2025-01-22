@@ -8,8 +8,15 @@ import TypingChallenge from './components/TypingChallenge.vue';
 import Upgrades from './components/Upgrades.vue';
 import { useGameStore } from './store/game.store';
 
-const gameStore = useGameStore();
-gameStore.startChallenge(1);
+let gameStore = useGameStore();
+
+const resetGame = () => {
+    // confirmation first via alert
+    if (window.confirm('Are you sure you want to reset the game?')) {
+        gameStore.$reset();
+        gameStore = useGameStore();
+    }
+};
 </script>
 
 <template>
@@ -30,18 +37,33 @@ gameStore.startChallenge(1);
             </div>
             <div class="middle-section">
                 <div>
-                    <div v-if="gameStore.challenge != null">
+                    <div v-if="gameStore.currentChallenge != null">
                         <TypingChallenge
-                            :translation="
-                                gameStore.challenge.currentChallenge.translation
-                            "
-                            :task="gameStore.challenge.currentChallenge.task"
+                            v-if="gameStore.currentChallenge != null"
+                            :challenge="gameStore.currentChallenge"
                         />
                     </div>
                 </div>
                 <div class="disclaimer">
                     <div>Version 0.0.2</div>
                     <div>More is yet to come</div>
+                    <button class="btn danger" v-on:click="resetGame">
+                        Reset Game
+                    </button>
+                    <button
+                        class="btn success"
+                        v-on:click="gameStore.tickSpeed = 100"
+                        v-if="gameStore.tickSpeed === 1"
+                    >
+                        Increase Game Speed
+                    </button>
+                    <button
+                        class="btn success"
+                        v-on:click="gameStore.tickSpeed = 1"
+                        v-if="gameStore.tickSpeed > 1"
+                    >
+                        Normalize Game Speed
+                    </button>
                 </div>
             </div>
             <div class="right-section">
@@ -80,7 +102,7 @@ gameStore.startChallenge(1);
 }
 
 .left-section {
-    min-width: 450px;
+    width: 450px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -96,7 +118,7 @@ gameStore.startChallenge(1);
 }
 
 .right-section {
-    min-width: 450px;
+    max-width: 450px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -117,5 +139,25 @@ gameStore.startChallenge(1);
     div {
         font-size: 0.7rem;
     }
+}
+
+.btn.danger {
+    background-color: #ff0000;
+    font-size: 0.8rem;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn.success {
+    background-color: #00ff00;
+    font-size: 0.8rem;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    border: none;
+    cursor: pointer;
 }
 </style>
