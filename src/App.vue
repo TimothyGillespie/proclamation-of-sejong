@@ -14,7 +14,7 @@ const resetGame = () => {
     // confirmation first via alert
     if (window.confirm('Are you sure you want to reset the game?')) {
         gameStore.$reset();
-        gameStore = useGameStore();
+        window.location.href = window.location.href; // hard reload for a proper refresh of the farm tiles
     }
 };
 </script>
