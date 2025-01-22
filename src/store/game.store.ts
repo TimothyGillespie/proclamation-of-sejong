@@ -231,6 +231,7 @@ export const useGameStore = defineStore('game', {
             this.availableUpgrades[id] = upgrade;
         },
     },
+    persist: true,
 });
 
 export type GameStoreType = ReturnType<typeof useGameStore>;
