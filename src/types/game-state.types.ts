@@ -35,4 +35,5 @@ export type GameState = {
     gameEventChoices: Record<string, number[]>;
     tickStamps: Record<string, number>;
     tickSpeed: number;
+    keyboardLayout: string;
 };

@@ -3,6 +3,55 @@ import type { GameEvent } from '../types/game-event.types';
 
 export const gameEventsInput: GameEvent[] = [
     {
+        id: 0,
+        name: 'Start',
+        description: [
+            'Welcome to this game of mine and thank you for seeking it out.',
+            'This is a very early version of the game. If you come across a bug, have ideas or any other feedback get in touch with me via email (timothy@gillespie.eu) or on Discord (id: sometimothy).',
+            'I hope you enjoy the game. Before, we can begin though I need to know your keyboard layout',
+        ],
+        trigger: (gameStore, gameEvent) =>
+            !(gameEvent.id in gameStore.gameEventChoices),
+        options: [
+            {
+                type: 'choice',
+                id: 1,
+                label: 'QWERTY (English Keyboard)',
+                onPick: (gameStore) => {
+                    gameStore.setKeyboardLayout('qwerty');
+                    gameStore.mountGameEvent(1);
+                },
+            },
+            {
+                type: 'choice',
+                id: 2,
+                label: 'QWERTZ (German Keyboard)',
+                onPick: (gameStore) => {
+                    gameStore.setKeyboardLayout('qwertz');
+                    gameStore.mountGameEvent(1);
+                },
+            },
+            {
+                type: 'choice',
+                id: 3,
+                label: 'AZERTY (French Keyboard)',
+                onPick: (gameStore) => {
+                    gameStore.setKeyboardLayout('azerty');
+                    gameStore.mountGameEvent(1);
+                },
+            },
+            {
+                type: 'choice',
+                id: 4,
+                label: 'Hangul (Korean Keyboard in Hangul mode)',
+                onPick: (gameStore) => {
+                    gameStore.setKeyboardLayout('hangul');
+                    gameStore.mountGameEvent(1);
+                },
+            },
+        ],
+    },
+    {
         id: 1,
         name: 'Welcome',
         description: [
@@ -10,8 +59,6 @@ export const gameEventsInput: GameEvent[] = [
             "You tend your family's farm and reap a yearly harvest of rice.",
             "Life is humble, but it's alright.",
         ],
-        trigger: (gameStore, gameEvent) =>
-            !(gameEvent.id in gameStore.gameEventChoices),
         options: [
             {
                 type: 'choice',

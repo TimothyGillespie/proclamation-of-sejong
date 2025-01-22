@@ -4,6 +4,7 @@ import App from './App.vue';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import { useGameStore } from './store/game.store';
+import { keyboardService } from './keyboard/typing.service';
 
 const app = createApp(App);
 
@@ -12,6 +13,7 @@ pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 
 const gameStore = useGameStore();
+keyboardService.changeConversionMap(gameStore.keyboardLayout);
 setInterval(() => {
     gameStore.tickTime();
 }, 10);

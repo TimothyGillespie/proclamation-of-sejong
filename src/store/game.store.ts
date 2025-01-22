@@ -5,6 +5,7 @@ import { upgrades } from '../data/upgrades';
 import { useToastStore } from './toast.store';
 import { gameEvents, gameEventsInput } from '../data/game-events';
 import type { GameEvent } from '../types/game-event.types';
+import { keyboardService } from '../keyboard/typing.service';
 
 export const TICKSTAMP_EVENTS = {
     PETITION_SENT: 'petition-sent',
@@ -88,6 +89,7 @@ export const useGameStore = defineStore('game', {
             gameEventChoices: {},
             tickStamps: {},
             tickSpeed: 1,
+            keyboardLayout: 'hangul',
         } as GameState;
     },
     getters: {
@@ -259,6 +261,10 @@ export const useGameStore = defineStore('game', {
         },
         createTickStamp(id: string) {
             this.tickStamps[id] = this.timeTicks;
+        },
+        setKeyboardLayout(layout: string) {
+            this.keyboardLayout = layout;
+            keyboardService.changeConversionMap(layout);
         },
     },
     persist: true,

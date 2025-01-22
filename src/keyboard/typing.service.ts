@@ -1,26 +1,34 @@
-import { letterMappingGermanHangul, specialKeyMap } from '../data/keyboard';
+import { letterMapping, specialKeyMap } from '../data/keyboard';
 import { doubleMap } from '../data/korean-symbols';
 import type { TypeEvent, TypeEventSubscriber } from '../types/event.types';
 
-const shiftConversionMap: Record<string, string> = Object.entries(
-    letterMappingGermanHangul
-)
-    .filter((singleMapping) => singleMapping[1] in doubleMap)
-    .reduce(
-        (acc, [key, value]) => {
-            acc[key.toLocaleUpperCase()] = doubleMap[value];
-            return acc;
-        },
-        {} as Record<string, string>
-    );
+const conversionMapFrom = (inputMap: Record<string, string>) => {
+    const shiftConversionMap: Record<string, string> = Object.entries(inputMap)
+        .filter((singleMapping) => singleMapping[1] in doubleMap)
+        .reduce(
+            (acc, [key, value]) => {
+                acc[key.toLocaleUpperCase()] = doubleMap[value];
+                return acc;
+            },
+            {} as Record<string, string>
+        );
 
-const conversionMap = { ...letterMappingGermanHangul, ...shiftConversionMap };
+    const conversionMap = { ...inputMap, ...shiftConversionMap };
+
+    return conversionMap;
+};
 
 class KeyboardService {
     private subscribers: { id: string; callback: TypeEventSubscriber }[] = [];
+    private conversionMap: Record<string, string>;
 
     constructor() {
         window.addEventListener('keydown', this.handleKeydown.bind(this));
+        this.conversionMap = conversionMapFrom(letterMapping.hangul);
+    }
+
+    public changeConversionMap(layout: string) {
+        this.conversionMap = conversionMapFrom(letterMapping[layout]);
     }
 
     private handleKeydown(event: KeyboardEvent) {
@@ -32,11 +40,15 @@ class KeyboardService {
             eventToSend = { type: specialKeyMap[key] };
         }
 
-        if (key in conversionMap || key.toLocaleLowerCase() in conversionMap) {
+        if (
+            key in this.conversionMap ||
+            key.toLocaleLowerCase() in this.conversionMap
+        ) {
             eventToSend = {
                 type: 'character',
                 character:
-                    conversionMap[key] ?? conversionMap[key.toLowerCase()],
+                    this.conversionMap[key] ??
+                    this.conversionMap[key.toLowerCase()],
             };
         }
 
