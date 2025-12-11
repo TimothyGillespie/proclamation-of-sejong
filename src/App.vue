@@ -69,7 +69,7 @@ const resetGame = () => {
                             <button
                                 class="btn ink-btn"
                                 @click="resetGame"
-                                title="Start Over"
+                                aria-label="Reset game and start over"
                             >
                                 Reset
                             </button>
@@ -77,7 +77,7 @@ const resetGame = () => {
                                 class="btn ink-btn"
                                 @click="tickSpeed = 100"
                                 v-if="tickSpeed === 1"
-                                title="Speed up time"
+                                aria-label="Speed up time"
                             >
                                 Fast Forward
                             </button>
@@ -85,7 +85,7 @@ const resetGame = () => {
                                 class="btn ink-btn"
                                 @click="gameStore.tickSpeed = 1"
                                 v-if="gameStore.tickSpeed > 1"
-                                title="Normal Speed"
+                                aria-label="Return to normal speed"
                             >
                                 Normal Speed
                             </button>

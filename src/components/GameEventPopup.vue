@@ -2,22 +2,41 @@
 import { defineProps } from 'vue';
 import type { GameEvent } from '../types/game-event.types';
 import GameEventChoice from './GameEventChoice.vue';
+import { useGameStore } from '../store/game.store';
 
 const { event } = defineProps<{
     event: GameEvent | null;
 }>();
+
+const gameStore = useGameStore();
+
+const handleEscape = (keyboardEvent: KeyboardEvent) => {
+    if (keyboardEvent.key === 'Escape' && gameStore.currentGameEvent) {
+        const firstOption = gameStore.currentGameEvent.options[0];
+        if (firstOption) {
+            gameStore.makeGameEventChoice(firstOption.id);
+        }
+    }
+};
 </script>
 
 <template>
-    <div v-if="event" class="popup-overlay">
+    <div 
+        v-if="event" 
+        class="popup-overlay"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="`event-title-${event.id}`"
+        @keydown="handleEscape"
+    >
         <div class="scroll-modal">
             <div class="scroll-top"></div>
             
             <div class="scroll-body">
                 <div class="game-event">
                     <div class="popup-header">
-                        <h2 class="game-event-name">{{ event.name }}</h2>
-                        <div class="seal-mark">Official</div>
+                        <h2 :id="`event-title-${event.id}`" class="game-event-name">{{ event.name }}</h2>
+                        <div class="seal-mark" aria-label="Official seal">Official</div>
                     </div>
                     <div class="popup-content">
                         <p
@@ -29,7 +48,7 @@ const { event } = defineProps<{
                         </p>
                     </div>
                 </div>
-                <div class="choice-bar">
+                <div class="choice-bar" role="group" aria-label="Event choices">
                     <GameEventChoice
                         v-for="option in event.options"
                         :key="option.id"

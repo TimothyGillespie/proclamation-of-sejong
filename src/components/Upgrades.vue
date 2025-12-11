@@ -11,7 +11,7 @@ const gameStore = useGameStore();
             <p>You have learned all you can for now.</p>
         </div>
         
-        <div 
+        <button 
             v-for="singleUpgrade in gameStore.availableUpgrades" 
             :key="singleUpgrade.id"
             class="upgrade-scroll"
@@ -20,6 +20,9 @@ const gameStore = useGameStore();
                 purchasable: gameStore.canPurchaseUpgrade(singleUpgrade.id)
             }"
             @click="gameStore.purchaseUpgrade(singleUpgrade.id)"
+            :disabled="!gameStore.canPurchaseUpgrade(singleUpgrade.id)"
+            :aria-label="`${singleUpgrade.name}: ${singleUpgrade.description}. ${gameStore.canPurchaseUpgrade(singleUpgrade.id) ? 'Click to purchase' : 'Cannot afford'}`"
+            type="button"
         >
             <div class="scroll-content">
                 <div class="upgrade-header">
@@ -35,7 +38,7 @@ const gameStore = useGameStore();
                     />
                 </div>
             </div>
-        </div>
+        </button>
     </div>
 </template>
 
@@ -61,6 +64,10 @@ const gameStore = useGameStore();
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    background: #fff8e1;
+    padding: 0;
+    text-align: left;
+    width: 100%;
     
     /* Scroll ends effect */
     &::before, &::after {
@@ -76,19 +83,19 @@ const gameStore = useGameStore();
     &::before { left: 0; }
     &::after { right: 0; }
 
-    &:hover {
+    &:hover:not(:disabled) {
         transform: translateY(-2px);
         box-shadow: 4px 4px 8px rgba(0,0,0,0.15);
     }
 
-    &.disabled {
+    &:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         filter: grayscale(0.8);
         background-color: #eee;
     }
     
-    &.purchasable {
+    &.purchasable:not(:disabled) {
         border-bottom: 3px solid var(--color-nature);
     }
 }

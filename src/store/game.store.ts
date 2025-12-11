@@ -59,8 +59,9 @@ const currentGameEvent = (state: GameState): GameEvent | null => {
 const currentChallenge = (state: GameState) =>
     challenges[state.currentChallengeId ?? -1] ?? null;
 
-const ticksSinceTicketstamp = (state: GameState) => (id: string) => {
-    return state.timeTicks - state.tickStamps[id];
+const ticksSinceTickstamp = (state: GameState) => (id: string) => {
+    const tickStamp = state.tickStamps[id];
+    return tickStamp !== undefined ? state.timeTicks - tickStamp : 0;
 };
 
 export const useGameStore = defineStore('game', {
@@ -102,7 +103,7 @@ export const useGameStore = defineStore('game', {
         canPurchaseUpgrade,
         currentGameEvent,
         currentChallenge,
-        ticksSinceTicketstamp,
+        ticksSinceTickstamp,
     },
     actions: {
         plantField(farmId: number) {

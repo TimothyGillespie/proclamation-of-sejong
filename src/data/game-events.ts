@@ -205,7 +205,7 @@ export const gameEventsInput: GameEvent[] = [
             'About two weeks have gone by since you sent your letter when you see two men that are not from your village. They are obviously no farmers, but they seem to draw something and survey the land.',
         ],
         trigger: (gameStore, gameEvent) =>
-            gameStore.ticksSinceTicketstamp(TICKSTAMP_EVENTS.PETITION_SENT) >=
+            gameStore.ticksSinceTickstamp(TICKSTAMP_EVENTS.PETITION_SENT) >=
                 2000 && !(gameEvent.id in gameStore.gameEventChoices),
         options: [
             {
@@ -226,7 +226,7 @@ export const gameEventsInput: GameEvent[] = [
             'With the extra water, your crops grow stronger and healthier than ever before and the harvest has doubled for the same plot of land.',
         ],
         trigger: (gameStore, gameEvent) =>
-            gameStore.ticksSinceTicketstamp(TICKSTAMP_EVENTS.PETITION_SENT) >=
+            gameStore.ticksSinceTickstamp(TICKSTAMP_EVENTS.PETITION_SENT) >=
                 3000 &&
             gameEvent.id - 1 in gameStore.gameEventChoices &&
             !(gameEvent.id in gameStore.gameEventChoices),

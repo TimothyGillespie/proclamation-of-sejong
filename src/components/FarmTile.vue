@@ -49,19 +49,21 @@ const onClick = () => {
 </script>
 
 <template>
-    <div 
+    <button 
         class="farm-tile" 
         :class="[farm.state, { 'shake-animation': isShaking }]"
         @click="onClick"
+        :aria-label="`Farm field ${fieldId}, ${farm.state === 'barren' ? 'click to plant' : farm.state === 'ripe' ? 'click to harvest' : 'growing'}`"
+        type="button"
     >
         <div class="content">
-            <span v-if="farm.state === 'planted'">🌱</span>
-            <span v-else-if="farm.state === 'growing'">🌿</span>
-            <span v-else-if="farm.state === 'ripe'">🌾</span>
+            <span v-if="farm.state === 'planted'" aria-hidden="true">🌱</span>
+            <span v-else-if="farm.state === 'growing'" aria-hidden="true">🌿</span>
+            <span v-else-if="farm.state === 'ripe'" aria-hidden="true">🌾</span>
         </div>
         
         <!-- Hover Overlay for Feedback -->
-        <div class="tile-overlay">
+        <div class="tile-overlay" aria-hidden="true">
             <div v-if="farm.state === 'barren'" class="overlay-content">
                 <span class="action-label">Plant</span>
             </div>
@@ -75,14 +77,13 @@ const onClick = () => {
                 <span class="wait-label">Growing...</span>
             </div>
         </div>
-    </div>
+    </button>
 </template>
 
 <style scoped lang="scss">
 .farm-tile {
     width: 100%;
     aspect-ratio: 1;
-    cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     justify-content: center;
@@ -92,6 +93,8 @@ const onClick = () => {
     border: 1px solid rgba(0,0,0,0.1);
     box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
     overflow: hidden;
+    background: none;
+    padding: 0;
 
     &:hover {
         transform: scale(0.98);

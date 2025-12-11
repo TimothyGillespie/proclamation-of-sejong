@@ -97,16 +97,28 @@ onMounted(() => {
     <div class="challenge-paper" v-if="currentTaskPart">
         <div class="paper-header">
             <h3>Practice</h3>
-            <div class="ink-stain"></div>
+            <div class="ink-stain" aria-hidden="true"></div>
         </div>
 
-        <div class="translation-banner" v-if="currentTaskPart.translation">
-            <span class="quote-mark">“</span>
+        <div
+            class="translation-banner"
+            v-if="currentTaskPart.translation"
+            role="note"
+            aria-label="Translation"
+        >
+            <span class="quote-mark" aria-hidden="true">"</span>
             {{ currentTaskPart.translation }}
-            <span class="quote-mark">”</span>
+            <span class="quote-mark" aria-hidden="true">"</span>
         </div>
 
-        <div class="writing-area">
+        <div
+            class="writing-area"
+            role="textbox"
+            aria-label="Typing practice area"
+            :aria-valuenow="evaluatedBlocks.length"
+            :aria-valuemax="targetText.length"
+            :aria-valuetext="`${evaluatedBlocks.length} of ${targetText.length} characters completed`"
+        >
             <!-- 
                We render each character slot individually.
                This allows us to treat "Target" and "Input" as one unified visual unit per character.
@@ -124,18 +136,23 @@ onMounted(() => {
                         evaluatedBlocks[index]?.state === 'incorrect' &&
                         evaluatedBlocks[index]?.completed,
                 }"
+                :aria-label="`Character ${index + 1}: ${evaluatedBlocks[index] ? (evaluatedBlocks[index].state === 'correct' ? 'correct' : 'incorrect') : 'not yet typed'}`"
             >
                 <!-- Background Guide Character (Faint) -->
-                <div class="guide-char">{{ char }}</div>
+                <div class="guide-char" aria-hidden="true">{{ char }}</div>
 
                 <!-- User Input Character (Ink Overlay) -->
-                <div class="input-char" v-if="evaluatedBlocks[index]">
+                <div
+                    class="input-char"
+                    v-if="evaluatedBlocks[index]"
+                    aria-hidden="true"
+                >
                     {{ blockToString(evaluatedBlocks[index]) }}
                 </div>
             </div>
         </div>
 
-        <div class="instructions">
+        <div class="instructions" role="status" aria-live="polite">
             <span class="key-hint">Type to write</span>
         </div>
     </div>
