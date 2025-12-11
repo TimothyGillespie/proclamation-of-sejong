@@ -70,7 +70,7 @@ const hourLines = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75]; // degrees
 </script>
 
 <template>
-    <div class="sundial-wrapper">
+    <div class="angbuilgu-wrapper">
         <div class="angbuilgu">
             <!-- SVG Grid representing the concave bowl markings -->
             <svg class="bowl-grid" viewBox="-50 -50 100 100">
@@ -167,7 +167,7 @@ const hourLines = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75]; // degrees
 </template>
 
 <style scoped lang="scss">
-.sundial-wrapper {
+.angbuilgu-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;

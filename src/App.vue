@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia';
 import CurrencyList from './components/CurrencyList.vue';
 import FarmTile from './components/FarmTile.vue';
 import GameEventPopup from './components/GameEventPopup.vue';
-import LoadingBar from './components/LoadingBar.vue';
+import Angbuilgu from './components/Angbuilgu.vue';
 import ToastDisplay from './components/ToastDisplay.vue';
 import TypingChallenge from './components/TypingChallenge.vue';
 import Upgrades from './components/Upgrades.vue';
@@ -122,9 +122,9 @@ const resetGame = () => {
     <ToastDisplay />
     <GameEventPopup :event="currentGameEvent" />
 
-    <!-- Floating Sundial in bottom right -->
+    <!-- Floating Angbuilgu in bottom right -->
     <div class="clock-overlay">
-        <LoadingBar :progress="(timeTicks % 1000) / 1000" />
+        <Angbuilgu :progress="(timeTicks % 1000) / 1000" />
     </div>
 </template>
 
