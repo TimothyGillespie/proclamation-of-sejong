@@ -7,17 +7,20 @@ const gameStore = useGameStore();
 
 <template>
     <div class="upgrades-list">
-        <div v-if="gameStore.availableUpgrades.length === 0" class="empty-upgrades">
+        <div
+            v-if="Object.keys(gameStore.availableUpgrades).length === 0"
+            class="empty-upgrades"
+        >
             <p>You have learned all you can for now.</p>
         </div>
-        
-        <button 
-            v-for="singleUpgrade in gameStore.availableUpgrades" 
+
+        <button
+            v-for="singleUpgrade in gameStore.availableUpgrades"
             :key="singleUpgrade.id"
             class="upgrade-scroll"
             :class="{
                 disabled: !gameStore.canPurchaseUpgrade(singleUpgrade.id),
-                purchasable: gameStore.canPurchaseUpgrade(singleUpgrade.id)
+                purchasable: gameStore.canPurchaseUpgrade(singleUpgrade.id),
             }"
             @click="gameStore.purchaseUpgrade(singleUpgrade.id)"
             :disabled="!gameStore.canPurchaseUpgrade(singleUpgrade.id)"
@@ -28,13 +31,17 @@ const gameStore = useGameStore();
                 <div class="upgrade-header">
                     <h4>{{ singleUpgrade.name }}</h4>
                 </div>
-                
+
                 <p class="upgrade-desc">{{ singleUpgrade.description }}</p>
-                
+
                 <div class="upgrade-cost">
                     <span class="cost-label">Requirement:</span>
                     <CurrencyList
-                        :currency="gameStore.getCurrentCostForUpgrade(singleUpgrade.id)!"
+                        :currency="
+                            gameStore.getCurrentCostForUpgrade(
+                                singleUpgrade.id
+                            )!
+                        "
                     />
                 </div>
             </div>
@@ -63,14 +70,15 @@ const gameStore = useGameStore();
     position: relative;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
     background: #fff8e1;
     padding: 0;
     text-align: left;
     width: 100%;
-    
+
     /* Scroll ends effect */
-    &::before, &::after {
+    &::before,
+    &::after {
         content: '';
         position: absolute;
         height: 100%;
@@ -79,13 +87,17 @@ const gameStore = useGameStore();
         top: 0;
         border-radius: 2px;
     }
-    
-    &::before { left: 0; }
-    &::after { right: 0; }
+
+    &::before {
+        left: 0;
+    }
+    &::after {
+        right: 0;
+    }
 
     &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 4px 4px 8px rgba(0,0,0,0.15);
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15);
     }
 
     &:disabled {
@@ -94,7 +106,7 @@ const gameStore = useGameStore();
         filter: grayscale(0.8);
         background-color: #eee;
     }
-    
+
     &.purchasable:not(:disabled) {
         border-bottom: 3px solid var(--color-nature);
     }
@@ -108,7 +120,7 @@ const gameStore = useGameStore();
     margin-bottom: var(--spacing-sm);
     border-bottom: 1px dashed var(--ink-secondary);
     padding-bottom: 4px;
-    
+
     h4 {
         font-size: 1.1rem;
         color: var(--ink-primary);
@@ -130,7 +142,7 @@ const gameStore = useGameStore();
     align-items: center;
     gap: var(--spacing-sm);
     font-size: 0.85rem;
-    
+
     .cost-label {
         color: var(--ink-primary);
         font-weight: bold;
