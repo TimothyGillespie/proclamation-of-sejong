@@ -61,16 +61,16 @@ button {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-wood);
+    background: var(--bg-paper-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--bg-paper-dark);
-    border: 1px solid var(--bg-wood);
+    background: var(--bg-wood);
+    border: 1px solid var(--bg-paper);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--bg-paper);
+    background: var(--bg-wood-light);
 }
 
 /* Dancheong Pattern Utilities */

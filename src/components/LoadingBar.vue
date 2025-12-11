@@ -12,7 +12,7 @@ const DUSK = 0.8; // 7-8 PM approx
 // Computed: Is the shadow visible?
 const shadowOpacity = computed(() => {
     if (props.progress < DAWN || props.progress > DUSK) return 0;
-    
+
     // Smooth fade in/out
     const fadeRange = 0.05;
     if (props.progress < DAWN + fadeRange) {
@@ -35,29 +35,30 @@ const shadowTransform = computed(() => {
     // 6 AM (Sun East/Right): Shadow points West/Left (-90deg).
     // 12 PM (Sun South/Down in Northern Hemisphere): Shadow points North/Up (0deg).
     // 6 PM (Sun West/Left): Shadow points East/Right (+90deg).
-    
+
     // Normalize progress to -1 (Dawn) to 0 (Noon) to 1 (Dusk)
     const mid = (DAWN + DUSK) / 2; // 0.5
     const range = (DUSK - DAWN) / 2; // 0.3
     const normalizedTime = (props.progress - mid) / range; // -1 to 1 during daylight
-    
+
     // Rotation: -90deg to +90deg
     const rotateDeg = normalizedTime * 90;
-    
+
     // Length:
     // Shadow is longest at sunrise/sunset (reaching the rim).
     // Shadow is shortest at noon (closest to center).
-    // Let's simulate a curve. 
+    // Let's simulate a curve.
     // At 0 (Noon), length is minimal (e.g., 20px).
     // At 1/-1 (Horizon), length is maximal (e.g., 50px - rim radius).
     // Parabolic or Sinusoidal approximation for shadow length on the bowl surface.
     // L = Min + (Max - Min) * t^2 is a decent approximation for a bowl projection.
-    
+
     const minLen = 15; // Closest to gnomon (Winter noon is far, Summer noon is close. Average.)
     const maxLen = 45; // Rim
-    const currentLen = minLen + (maxLen - minLen) * Math.pow(Math.abs(normalizedTime), 2.5); // Power > 1 makes it stay short longer around noon
-    
-    return `rotate(${rotateDeg}deg) translateY(-${currentLen}px)`; 
+    const currentLen =
+        minLen + (maxLen - minLen) * Math.pow(Math.abs(normalizedTime), 2.5); // Power > 1 makes it stay short longer around noon
+
+    return `rotate(${rotateDeg}deg) translateY(-${currentLen}px)`;
     // Negative Y because 0deg is Up/North, and we rotate the container.
     // Actually, if we rotate the container:
     // 0deg: translateY(-len) moves it Up. Correct.
@@ -78,7 +79,7 @@ const hourLines = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75]; // degrees
                         <circle r="48" cx="0" cy="0" />
                     </clipPath>
                 </defs>
-                
+
                 <!-- Background -->
                 <circle r="49" fill="#e0e0e0" />
                 <circle r="49" fill="url(#concave-gradient)" />
@@ -91,45 +92,77 @@ const hourLines = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75]; // degrees
                     <!-- Vertical Hour Lines (Meridians) -->
                     <!-- They radiate from the north pole (invisible bottom?) -->
                     <!-- Simplified as straight lines for visual clarity at this scale -->
-                    <line 
-                        v-for="deg in hourLines" 
-                        :key="'h'+deg"
-                        x1="0" y1="0" 
-                        x2="0" y2="-60" 
-                        stroke="#9e9e9e" 
+                    <line
+                        v-for="deg in hourLines"
+                        :key="'h' + deg"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="-60"
+                        stroke="#9e9e9e"
                         stroke-width="0.5"
-                        :transform="`rotate(${deg}) translate(0, 10)`" 
+                        :transform="`rotate(${deg}) translate(0, 10)`"
                     />
                     <!-- The translate(0,10) pushes the convergence point down, faking the pole projection -->
 
                     <!-- Horizontal Season Lines (Solar Terms) -->
                     <!-- Curves perpendicular to hour lines -->
-                    <path d="M-45,-15 Q0,-25 45,-15" fill="none" stroke="#9e9e9e" stroke-width="0.5" /> <!-- Summer (Inner) -->
-                    <path d="M-48,-28 Q0,-38 48,-28" fill="none" stroke="#9e9e9e" stroke-width="0.5" /> <!-- Equinox -->
-                    <path d="M-45,-40 Q0,-50 45,-40" fill="none" stroke="#9e9e9e" stroke-width="0.5" /> <!-- Winter (Outer) -->
+                    <path
+                        d="M-45,-15 Q0,-25 45,-15"
+                        fill="none"
+                        stroke="#9e9e9e"
+                        stroke-width="0.5"
+                    />
+                    <!-- Summer (Inner) -->
+                    <path
+                        d="M-48,-28 Q0,-38 48,-28"
+                        fill="none"
+                        stroke="#9e9e9e"
+                        stroke-width="0.5"
+                    />
+                    <!-- Equinox -->
+                    <path
+                        d="M-45,-40 Q0,-50 45,-40"
+                        fill="none"
+                        stroke="#9e9e9e"
+                        stroke-width="0.5"
+                    />
+                    <!-- Winter (Outer) -->
                 </g>
-                
+
                 <!-- Kanji Markers -->
-                <g class="labels" font-family="serif" font-size="8" text-anchor="middle" fill="#424242" font-weight="bold">
-                    <text x="0" y="-38">午</text> <!-- Noon -->
-                    <text x="-35" y="-12" transform="rotate(-60)">卯</text> <!-- ~6AM -->
-                    <text x="35" y="-12" transform="rotate(60)">酉</text> <!-- ~6PM -->
+                <g
+                    class="labels"
+                    font-family="serif"
+                    font-size="8"
+                    text-anchor="middle"
+                    fill="#424242"
+                    font-weight="bold"
+                >
+                    <text x="0" y="-38">午</text>
+                    <!-- Noon -->
+                    <text x="-35" y="-12" transform="rotate(-60)">卯</text>
+                    <!-- ~6AM -->
+                    <text x="35" y="-12" transform="rotate(60)">酉</text>
+                    <!-- ~6PM -->
                 </g>
             </svg>
 
             <!-- The Gnomon (Pointer) -->
             <div class="gnomon-base"></div>
             <div class="gnomon-point"></div>
-            
+
             <!-- The Shadow (Projected Tip) -->
-            <div 
+            <div
                 class="shadow-container"
                 :style="{ transform: shadowTransform }"
             >
-                <div class="shadow-tip" :style="{ opacity: shadowOpacity }"></div>
+                <div
+                    class="shadow-tip"
+                    :style="{ opacity: shadowOpacity }"
+                ></div>
             </div>
         </div>
-        <div class="label">Angbuilgu</div>
     </div>
 </template>
 
@@ -148,7 +181,7 @@ const hourLines = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75]; // degrees
     position: relative;
     border: 4px solid #5d4037; /* Bronze/Wood rim */
     background-color: #f5f5f5;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
 .bowl-grid {
@@ -168,7 +201,7 @@ const hourLines = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75]; // degrees
     border-radius: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .gnomon-point {
@@ -205,7 +238,7 @@ const hourLines = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75]; // degrees
     left: -3px;
     width: 6px;
     height: 6px;
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 50%;
     filter: blur(1.5px);
     transition: opacity 0.5s ease;
@@ -220,6 +253,6 @@ const hourLines = [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75]; // degrees
     padding: 2px 8px;
     border: 1px solid #d7ccc8;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>
