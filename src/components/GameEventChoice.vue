@@ -14,7 +14,7 @@ const gameStore = useGameStore();
         <button
             class="choice-button"
             v-if="option.type === 'choice'"
-            v-on:click="gameStore.makeGameEventChoice(option.id)"
+            @click="gameStore.makeGameEventChoice(option.id)"
         >
             {{ option.label }}
         </button>
@@ -23,15 +23,31 @@ const gameStore = useGameStore();
 
 <style scoped lang="scss">
 .game-event-choice {
-    margin-bottom: 1rem;
-
     .choice-button {
-        background-color: gray;
-        color: white;
-        border: 1px solid black;
-        padding: 0.5rem;
-        border-radius: 5px;
+        background-color: transparent;
+        color: var(--ink-primary);
+        border: 2px solid var(--ink-primary);
+        padding: 0.8rem 1.5rem;
+        border-radius: 4px; /* Slight round */
         cursor: pointer;
+        font-size: 1rem;
+        font-family: var(--font-serif);
+        font-weight: bold;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+            background-color: var(--ink-primary);
+            color: var(--bg-paper);
+            transform: translateY(-2px);
+            box-shadow: 2px 2px 0 var(--ink-secondary);
+        }
+        
+        &:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
     }
 }
 </style>

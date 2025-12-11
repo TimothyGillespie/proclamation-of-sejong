@@ -36,8 +36,11 @@ class KeyboardService {
         }
 
         if (eventToSend != undefined) {
+            if (key === ' ' || key === 'Spacebar') {
+                event.preventDefault();
+            }
             this.subscribers.forEach((subscriber) =>
-                subscriber.callback(eventToSend)
+                subscriber.callback(eventToSend!)
             );
         }
     }

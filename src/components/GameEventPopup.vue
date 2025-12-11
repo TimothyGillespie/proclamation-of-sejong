@@ -9,61 +9,129 @@ const { event } = defineProps<{
 </script>
 
 <template>
-    <div v-if="event" class="game-event-popup">
-        <div class="game-event">
-            <h2 class="game-event-name">{{ event.name }}</h2>
-            <p
-                class="game-description-paragraph"
-                v-for="singleLine in event.description"
-            >
-                {{ singleLine }}
-            </p>
-        </div>
-        <div class="choice-bar">
-            <GameEventChoice
-                v-for="option in event.options"
-                :key="option.id"
-                :option="option"
-            />
+    <div v-if="event" class="popup-overlay">
+        <div class="scroll-modal">
+            <div class="scroll-top"></div>
+            
+            <div class="scroll-body">
+                <div class="game-event">
+                    <div class="popup-header">
+                        <h2 class="game-event-name">{{ event.name }}</h2>
+                        <div class="seal-mark">Official</div>
+                    </div>
+                    <div class="popup-content">
+                        <p
+                            class="game-description-paragraph"
+                            v-for="(singleLine, index) in event.description"
+                            :key="index"
+                        >
+                            {{ singleLine }}
+                        </p>
+                    </div>
+                </div>
+                <div class="choice-bar">
+                    <GameEventChoice
+                        v-for="option in event.options"
+                        :key="option.id"
+                        :option="option"
+                    />
+                </div>
+            </div>
+            
+            <div class="scroll-bottom"></div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-.game-event-popup {
+.popup-overlay {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    color: white;
-    transform: translate(-50%, -50%);
-    background-color: brown;
-    border: 1px solid black;
-    padding: 1rem;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
 }
 
-.game-event {
-    margin-bottom: 1rem;
+.scroll-modal {
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+.scroll-body {
+    background-color: #fdfbf7; /* Very light paper */
+    padding: 2rem 3rem;
+    min-height: 200px;
+    max-height: 70vh;
+    overflow-y: auto;
+    color: var(--ink-primary);
+    position: relative;
+    border-left: 10px solid var(--bg-wood-light); /* Scroll handles */
+    border-right: 10px solid var(--bg-wood-light);
+}
+
+.scroll-top, .scroll-bottom {
+    height: 20px;
+    background-color: var(--bg-wood);
+    border-radius: 10px;
+    width: 104%; /* Slightly wider than body */
+    margin-left: -2%;
+    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.popup-header {
+    border-bottom: 2px solid var(--ink-primary);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .game-event-name {
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    font-size: 1.5rem;
-    border-bottom: 1px solid white;
+    font-size: 1.8rem;
+    color: var(--ink-primary);
+    font-family: var(--font-serif);
+    font-weight: bold;
+}
+
+.seal-mark {
+    border: 3px solid var(--color-danger);
+    color: var(--color-danger);
+    font-weight: bold;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    transform: rotate(-10deg);
+    font-family: var(--font-mono);
+    opacity: 0.8;
 }
 
 .game-description-paragraph {
-    margin: 1.2rem 0;
-    font-size: 1.2rem;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.8;
+    font-size: 1.1rem;
+    font-family: var(--font-serif);
 }
 
 .choice-bar {
     display: flex;
-    gap: 1rem;
+    gap: var(--spacing-md);
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed var(--ink-secondary);
 }
 </style>

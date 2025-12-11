@@ -6,43 +6,128 @@ const gameStore = useGameStore();
 </script>
 
 <template>
-    <div class="upgrades">
-        <div v-for="singleUpgrade in gameStore.availableUpgrades">
-            <div
-                :key="singleUpgrade.id"
-                @click="gameStore.purchaseUpgrade(singleUpgrade.id)"
-                class="upgrade-button"
-                :class="{
-                    disabled: !gameStore.canPurchaseUpgrade(singleUpgrade.id),
-                }"
-            >
-                <h1>{{ singleUpgrade.name }}</h1>
-                <p>{{ singleUpgrade.description }}</p>
-                <CurrencyList
-                    :currency="
-                        gameStore.getCurrentCostForUpgrade(singleUpgrade.id)!
-                    "
-                />
+    <div class="upgrades-list">
+        <div v-if="gameStore.availableUpgrades.length === 0" class="empty-upgrades">
+            <p>You have learned all you can for now.</p>
+        </div>
+        
+        <div 
+            v-for="singleUpgrade in gameStore.availableUpgrades" 
+            :key="singleUpgrade.id"
+            class="upgrade-scroll"
+            :class="{
+                disabled: !gameStore.canPurchaseUpgrade(singleUpgrade.id),
+                purchasable: gameStore.canPurchaseUpgrade(singleUpgrade.id)
+            }"
+            @click="gameStore.purchaseUpgrade(singleUpgrade.id)"
+        >
+            <div class="scroll-content">
+                <div class="upgrade-header">
+                    <h4>{{ singleUpgrade.name }}</h4>
+                </div>
+                
+                <p class="upgrade-desc">{{ singleUpgrade.description }}</p>
+                
+                <div class="upgrade-cost">
+                    <span class="cost-label">Requirement:</span>
+                    <CurrencyList
+                        :currency="gameStore.getCurrentCostForUpgrade(singleUpgrade.id)!"
+                    />
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-.upgrades {
+.upgrades-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--spacing-md);
+}
 
-    .upgrade-button {
-        background-color: #0a192f;
-        margin: 0.7rem;
-        padding: 0.7rem;
-        border-radius: 0.2rem;
+.empty-upgrades {
+    text-align: center;
+    color: var(--ink-secondary);
+    padding: var(--spacing-md);
+    font-style: italic;
+    font-family: var(--font-serif);
+}
 
-        &.disabled {
-            opacity: 0.5;
-        }
+.upgrade-scroll {
+    background-color: #fff8e1; /* Pale yellow paper */
+    border: 1px solid #d7ccc8;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    
+    /* Scroll ends effect */
+    &::before, &::after {
+        content: '';
+        position: absolute;
+        height: 100%;
+        width: 8px;
+        background: var(--bg-wood);
+        top: 0;
+        border-radius: 2px;
+    }
+    
+    &::before { left: 0; }
+    &::after { right: 0; }
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 4px 4px 8px rgba(0,0,0,0.15);
+    }
+
+    &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        filter: grayscale(0.8);
+        background-color: #eee;
+    }
+    
+    &.purchasable {
+        border-bottom: 3px solid var(--color-nature);
+    }
+}
+
+.scroll-content {
+    padding: var(--spacing-md) var(--spacing-lg); /* Add padding for scroll ends */
+}
+
+.upgrade-header {
+    margin-bottom: var(--spacing-sm);
+    border-bottom: 1px dashed var(--ink-secondary);
+    padding-bottom: 4px;
+    
+    h4 {
+        font-size: 1.1rem;
+        color: var(--ink-primary);
+        font-weight: bold;
+        font-family: var(--font-serif);
+    }
+}
+
+.upgrade-desc {
+    font-size: 0.9rem;
+    color: var(--ink-secondary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.4;
+    font-family: var(--font-serif);
+}
+
+.upgrade-cost {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.85rem;
+    
+    .cost-label {
+        color: var(--ink-primary);
+        font-weight: bold;
+        font-family: var(--font-serif);
     }
 }
 </style>

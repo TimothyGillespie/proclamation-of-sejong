@@ -1,10 +1,66 @@
+:root {
+  /* Hanji (Korean Paper) & Ink Theme */
+  --bg-paper: #f4f0e6; /* Warm rice paper */
+  --bg-paper-dark: #e8e2d2; /* Slightly darker paper for contrast */
+  --bg-wood: #5d4037; /* Dark wood for frames/borders */
+  --bg-wood-light: #8d6e63; /* Lighter wood */
+  
+  --ink-primary: #2c2c2c; /* Charcoal ink */
+  --ink-secondary: #595959; /* Faded ink */
+  --ink-accent: #8b0000; /* Red seal/stamp color */
+  
+  --color-rice: #d4a76a; /* Golden rice */
+  --color-nature: #558b2f; /* Jade/Green */
+  --color-water: #4fc3f7; /* Water (muted) */
+  --color-danger: #c62828; /* Deep red */
+  
+  --border-radius: 4px; /* Sharper corners for paper feel */
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  
+  --font-serif: "Times New Roman", Times, serif;
+  --font-mono: "Courier New", Courier, monospace; /* Typewriter/Print style */
+  
+  --shadow-paper: 2px 2px 5px rgba(0,0,0,0.1);
+  --border-ink: 2px solid var(--ink-primary);
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    font-size: 1rem;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #3e3e3e;
-    color: #fff;
+  background-color: var(--bg-wood); /* The table/desk */
+  color: var(--ink-primary);
+  font-family: var(--font-serif);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z' fill='%236d4c41' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Scrollbar Styling to match wood/paper */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-wood); 
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-paper-dark); 
+  border: 1px solid var(--bg-wood);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-paper); 
 }
