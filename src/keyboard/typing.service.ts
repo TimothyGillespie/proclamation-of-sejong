@@ -40,7 +40,7 @@ class KeyboardService {
                 event.preventDefault();
             }
             this.subscribers.forEach((subscriber) =>
-                subscriber.callback(eventToSend!)
+                subscriber.callback(eventToSend)
             );
         }
     }
