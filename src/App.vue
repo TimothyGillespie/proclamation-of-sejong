@@ -116,10 +116,6 @@ const resetGame = () => {
                     </div>
                 </aside>
             </div>
-
-            <footer class="game-footer">
-                <!-- Footer content can be placed here if needed, or removed if Sundial is moved -->
-            </footer>
         </div>
     </div>
 
@@ -336,11 +332,7 @@ const resetGame = () => {
 
 /* Footer */
 .game-footer {
-    height: 10px;
-    background-color: var(--bg-wood);
-    z-index: 2; /* Above content */
-    position: relative;
-    border-top: 1px solid var(--ink-secondary);
+    display: none;
 }
 
 /* Buttons */
