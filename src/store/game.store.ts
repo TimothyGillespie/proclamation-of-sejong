@@ -11,6 +11,8 @@ export const TICKSTAMP_EVENTS = {
     PETITION_SENT: 'petition-sent',
 };
 
+const EVENT_CHECK_INTERVAL = 100;
+
 const getFieldById = (state: GameState) => (farmId: number) =>
     state.farm.fields[farmId];
 const getUpgradeLevel = (state: GameState) => (upgradeId: number) =>
@@ -124,7 +126,10 @@ export const useGameStore = defineStore('game', {
                 this.increaseFarmCycle();
             }
 
-            if (this.currentGameEventId == null) {
+            if (
+                this.currentGameEventId == null &&
+                this.timeTicks % EVENT_CHECK_INTERVAL === 0
+            ) {
                 const triggeredGameEvents = gameEventsInput.filter(
                     (gameEvent) => {
                         return (

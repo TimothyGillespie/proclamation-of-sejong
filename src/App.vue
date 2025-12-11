@@ -52,7 +52,7 @@ const resetGame = () => {
                     </div>
                 </div>
                 <div class="disclaimer">
-                    <div>Version 0.0.3</div>
+                    <div>Version 0.0.4</div>
                     <div>More is yet to come</div>
                     <button class="btn danger" v-on:click="resetGame">
                         Reset Game
