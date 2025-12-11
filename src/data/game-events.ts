@@ -260,7 +260,6 @@ export const gameEventsInput: GameEvent[] = [
                 label: 'Restart',
                 onPick: (gameStore) => {
                     gameStore.$reset();
-                    window.location.href = window.location.href; // See App.vue
                 },
             },
             {

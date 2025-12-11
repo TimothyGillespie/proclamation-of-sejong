@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { useGameStore } from '../store/game.store';
 import { useToastStore } from '../store/toast.store';
+import { computed } from 'vue';
 const props = defineProps<{
     fieldId: number;
 }>();
 
 const gameStore = useGameStore();
 const toastStore = useToastStore();
-const farm = gameStore.getFieldById(props.fieldId);
+const farm = computed(() => gameStore.getFieldById(props.fieldId));
 
 const onClick = () => {
-    switch (farm.state) {
+    switch (farm.value.state) {
         case 'barren':
             gameStore.plantField(props.fieldId);
             break;

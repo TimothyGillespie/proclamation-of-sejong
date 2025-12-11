@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 import { InputStore, blockToString } from '../keyboard/input-store';
 import { keyboardService } from '../keyboard/typing.service';
 import { useGameStore } from '../store/game.store';
@@ -18,7 +18,7 @@ const currentTaskPart = ref<Challenge['task'][number]>(
     challenge?.task[currentTaskPartIndex.value] ?? null
 );
 
-keyboardService.subscribe((typeEvent: TypeEvent) => {
+const subscription = keyboardService.subscribe((typeEvent: TypeEvent) => {
     if (!currentTaskPart.value) return;
     inputStore.input(typeEvent);
     evalutedBlocks.value = inputStore.getEvaluatedBlocks(
@@ -48,6 +48,10 @@ keyboardService.subscribe((typeEvent: TypeEvent) => {
         evalutedBlocks.value = [];
         cursorLocation.value = -1;
     }
+});
+
+onUnmounted(() => {
+    subscription.unsubscribe();
 });
 
 watch(
