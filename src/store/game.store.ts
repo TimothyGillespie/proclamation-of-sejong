@@ -121,15 +121,17 @@ export const useGameStore = defineStore('game', {
             this.farm.fields[farmId].state = 'barren';
         },
         tickTime() {
+            const previousTicks = this.timeTicks;
             this.timeTicks += this.tickSpeed;
             if (this.timeTicks > this.farm.cycle * 1000) {
                 this.increaseFarmCycle();
             }
 
-            if (
-                this.currentGameEventId == null &&
-                this.timeTicks % EVENT_CHECK_INTERVAL === 0
-            ) {
+            const shouldTriggerEvent =
+                Math.floor(this.timeTicks / EVENT_CHECK_INTERVAL) >
+                Math.floor(previousTicks / EVENT_CHECK_INTERVAL);
+
+            if (this.currentGameEventId == null && shouldTriggerEvent) {
                 const triggeredGameEvents = gameEventsInput.filter(
                     (gameEvent) => {
                         return (
