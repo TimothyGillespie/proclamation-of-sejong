@@ -30,8 +30,13 @@ const resetGame = () => {
     <div class="app-container">
         <!-- Main Game Area (The Scroll/Paper on the desk) -->
         <div class="game-board">
+            <div class="dancheong-border-top"></div>
             <header class="game-header">
-                <h1>Proclamation of Sejong</h1>
+                <h1>
+                    <span class="dancheong-decorative-circle"></span>
+                    Proclamation of Sejong
+                    <span class="dancheong-decorative-circle"></span>
+                </h1>
                 <div class="header-controls">
                     <span class="date-display">Year 1444</span>
                 </div>
@@ -198,6 +203,9 @@ const resetGame = () => {
         font-weight: bold;
         font-family: var(--font-serif);
         letter-spacing: -1px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     .date-display {

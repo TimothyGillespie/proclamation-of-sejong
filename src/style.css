@@ -1,66 +1,109 @@
 :root {
-  /* Hanji (Korean Paper) & Ink Theme */
-  --bg-paper: #f4f0e6; /* Warm rice paper */
-  --bg-paper-dark: #e8e2d2; /* Slightly darker paper for contrast */
-  --bg-wood: #5d4037; /* Dark wood for frames/borders */
-  --bg-wood-light: #8d6e63; /* Lighter wood */
-  
-  --ink-primary: #2c2c2c; /* Charcoal ink */
-  --ink-secondary: #595959; /* Faded ink */
-  --ink-accent: #8b0000; /* Red seal/stamp color */
-  
-  --color-rice: #d4a76a; /* Golden rice */
-  --color-nature: #558b2f; /* Jade/Green */
-  --color-water: #4fc3f7; /* Water (muted) */
-  --color-danger: #c62828; /* Deep red */
-  
-  --border-radius: 4px; /* Sharper corners for paper feel */
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 2rem;
-  
-  --font-serif: "Times New Roman", Times, serif;
-  --font-mono: "Courier New", Courier, monospace; /* Typewriter/Print style */
-  
-  --shadow-paper: 2px 2px 5px rgba(0,0,0,0.1);
-  --border-ink: 2px solid var(--ink-primary);
+    /* Hanji (Korean Paper) & Ink Theme */
+    --bg-paper: #f4f0e6; /* Warm rice paper */
+    --bg-paper-dark: #e8e2d2; /* Slightly darker paper for contrast */
+    --bg-wood: #5d4037; /* Dark wood for frames/borders */
+    --bg-wood-light: #8d6e63; /* Lighter wood */
+
+    --ink-primary: #2c2c2c; /* Charcoal ink */
+    --ink-secondary: #595959; /* Faded ink */
+    --ink-accent: #8b0000; /* Red seal/stamp color */
+
+    --color-rice: #d4a76a; /* Golden rice */
+    --color-nature: #558b2f; /* Jade/Green */
+    --color-water: #4fc3f7; /* Water (muted) */
+    --color-danger: #c62828; /* Deep red */
+
+    /* Dancheong Colors - Modern Muted (Korean Ad Style) */
+    --dancheong-green: #5d9c77; /* Muted Sage Green */
+    --dancheong-red: #d86868; /* Soft Coral Red */
+    --dancheong-blue: #5b8bb3; /* Hazy Blue */
+    --dancheong-yellow: #ebc865; /* Muted Gold */
+    --dancheong-white: #f8f8f8; /* Soft White */
+    --dancheong-black: #333333; /* Soft Charcoal */
+
+    --border-radius: 4px; /* Sharper corners for paper feel */
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+
+    --font-serif: 'Times New Roman', Times, serif;
+    --font-mono: 'Courier New', Courier, monospace; /* Typewriter/Print style */
+
+    --shadow-paper: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    --border-ink: 2px solid var(--ink-primary);
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  background-color: var(--bg-wood); /* The table/desk */
-  color: var(--ink-primary);
-  font-family: var(--font-serif);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z' fill='%236d4c41' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-color: var(--bg-wood); /* The table/desk */
+    color: var(--ink-primary);
+    font-family: var(--font-serif);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z' fill='%236d4c41' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
 }
 
 button {
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s ease;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 /* Scrollbar Styling to match wood/paper */
 ::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-wood); 
+    background: var(--bg-wood);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-paper-dark); 
-  border: 1px solid var(--bg-wood);
+    background: var(--bg-paper-dark);
+    border: 1px solid var(--bg-wood);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--bg-paper); 
+    background: var(--bg-paper);
+}
+
+/* Dancheong Pattern Utilities */
+.dancheong-border-top {
+    height: 10px; /* Increased height for visibility */
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--dancheong-green) 0px,
+        var(--dancheong-green) 40px,
+        var(--dancheong-red) 40px,
+        var(--dancheong-red) 80px,
+        var(--dancheong-blue) 80px,
+        var(--dancheong-blue) 120px,
+        var(--dancheong-yellow) 120px,
+        var(--dancheong-yellow) 160px
+    );
+    border-bottom: 2px solid var(--ink-primary);
+    width: 100%;
+}
+
+.dancheong-decorative-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        var(--dancheong-yellow) 30%,
+        var(--dancheong-red) 30%,
+        var(--dancheong-red) 60%,
+        var(--dancheong-green) 60%
+    );
+    border: 1px solid var(--ink-primary);
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 4px;
 }
