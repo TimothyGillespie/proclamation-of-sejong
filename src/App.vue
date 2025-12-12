@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import CurrencyList from './components/CurrencyList.vue';
 import FarmTile from './components/FarmTile.vue';
@@ -7,23 +8,18 @@ import Angbuilgu from './components/Angbuilgu.vue';
 import ToastDisplay from './components/ToastDisplay.vue';
 import TypingChallenge from './components/TypingChallenge.vue';
 import Upgrades from './components/Upgrades.vue';
+import SettingsModal from './components/SettingsModal.vue';
 import { useGameStore } from './store/game.store';
 
 const gameStore = useGameStore();
+const showSettings = ref(false);
 let {
     farm,
     currentChallenge,
     currentGameEvent,
     timeTicks,
     currency,
-    tickSpeed,
 } = storeToRefs(gameStore);
-
-const resetGame = () => {
-    if (window.confirm('Are you sure you want to reset the game?')) {
-        gameStore.$reset();
-    }
-};
 </script>
 
 <template>
@@ -39,6 +35,19 @@ const resetGame = () => {
                 </h1>
                 <div class="header-controls">
                     <span class="date-display">Year 1444</span>
+                    <button 
+                        class="btn settings-btn" 
+                        @click="showSettings = true" 
+                        aria-label="Settings"
+                    >
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.42 2.78C19.89 4.25 19.89 6.64 18.42 8.11L13.11 13.42C12.44 14.09 11.64 14.6 10.74 14.89L7 16L8.11 12.26C8.4 11.36 8.91 10.56 9.58 9.89L14.89 4.58C16.36 3.11 18.75 3.11 20.22 4.58" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M13.5 9.5L14.5 10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 20L7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 22L4 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M14 4L18 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
                 </div>
             </header>
 
@@ -61,36 +70,6 @@ const resetGame = () => {
                                 :field-id="parseInt(singleFieldId, 10)"
                             />
                         </div>
-                    </div>
-
-                    <div class="panel-section controls-section">
-                        <h2>Settings</h2>
-                        <div class="game-controls">
-                            <button
-                                class="btn ink-btn"
-                                @click="resetGame"
-                                aria-label="Reset game and start over"
-                            >
-                                Reset
-                            </button>
-                            <button
-                                class="btn ink-btn"
-                                @click="tickSpeed = 100"
-                                v-if="tickSpeed === 1"
-                                aria-label="Speed up time"
-                            >
-                                Fast Forward
-                            </button>
-                            <button
-                                class="btn ink-btn"
-                                @click="gameStore.tickSpeed = 1"
-                                v-if="gameStore.tickSpeed > 1"
-                                aria-label="Return to normal speed"
-                            >
-                                Normal Speed
-                            </button>
-                        </div>
-                        <div class="version-tag">v0.0.4</div>
                     </div>
                 </aside>
 
@@ -121,14 +100,35 @@ const resetGame = () => {
 
     <ToastDisplay />
     <GameEventPopup :event="currentGameEvent" />
+    <SettingsModal v-if="showSettings" @close="showSettings = false" />
 
     <!-- Floating Angbuilgu in bottom right -->
     <div class="clock-overlay">
         <Angbuilgu :progress="(timeTicks % 1000) / 1000" />
     </div>
+
+    <!-- Version Stamp -->
+    <div class="version-stamp">
+        v0.0.4
+    </div>
 </template>
 
 <style scoped lang="scss">
+.version-stamp {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--ink-secondary);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 1000;
+    border: 1px solid var(--ink-secondary);
+    padding: 2px 5px;
+    transform: rotate(2deg);
+}
+
 .clock-overlay {
     position: fixed;
     bottom: 30px;
@@ -204,6 +204,12 @@ const resetGame = () => {
         gap: 10px;
     }
 
+    .header-controls {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+
     .date-display {
         font-family: var(--font-mono);
         font-size: 1.1rem;
@@ -213,6 +219,35 @@ const resetGame = () => {
         padding: 0.3rem 0.8rem;
         border-radius: 8px; /* Seal shape */
         transform: rotate(-2deg);
+        background-color: var(--bg-paper);
+    }
+
+    .settings-btn {
+        background: transparent;
+        border: 2px solid var(--ink-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--ink-primary);
+        transition: all 0.2s ease;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px; /* Slight rounding for paper feel, not circle */
+        box-shadow: 2px 2px 0 var(--ink-secondary);
+
+        &:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--ink-secondary);
+            background-color: var(--bg-wood-light);
+            color: var(--bg-paper);
+        }
+
+        &:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
     }
 }
 
